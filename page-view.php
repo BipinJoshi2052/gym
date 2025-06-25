@@ -2,10 +2,21 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$servername = "localhost";
-$username = "debian-sys-maint";
-$password = "X8ELMCUGIypycqn2";
-$dbname = "portfolio";
+
+// Database connection details based on environment (localhost or production)
+if ($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_ADDR'] == '127.0.0.1' || $_SERVER['SERVER_ADDR'] == '::1') {
+    // Code for localhost
+    $servername = "localhost";
+    $username = "debian-sys-maint";
+    $password = "X8ELMCUGIypycqn2";
+    $dbname = "portfolio";
+} else {
+    // Code for production server or remote server
+    $servername = "localhost"; // Replace with actual production server name if needed
+    $username = "joshibip_joshibip";
+    $dbname = "joshibip_portfolio";
+    $password = "QG(Kit70IPG9";
+}
 
 //    $username = "joshibip_joshibip";
 //     $dbname = "joshibip_portfolio";
