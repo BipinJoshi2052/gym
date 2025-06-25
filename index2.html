@@ -1,0 +1,2155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Schedule - Workout Planner</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --dark-bg: #1a1a2e;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --text-light: #e0e0e0;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+        }
+
+        .hero-section {
+            background: var(--primary-gradient);
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .week-selector {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .week-selector select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-light);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .week-selector select:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            color: var(--text-light);
+        }
+
+        .week-selector option {
+            background: var(--dark-bg);
+            color: var(--text-light);
+        }
+
+        .slider-container {
+            position: relative;
+            margin: 2rem 0;
+            padding: 2rem 0;
+        }
+
+        .slider-track {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            gap: 1rem;
+            padding: 1rem 0;
+            scrollbar-width: none;
+        }
+
+        .slider-track::-webkit-scrollbar {
+            display: none;
+        }
+
+        .day-card {
+            min-width: 200px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .day-card:hover::before {
+            left: 100%;
+        }
+
+        .day-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: #667eea;
+        }
+
+        .day-card.active {
+            background: var(--secondary-gradient);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .day-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+            transition: color 0.3s ease;
+        }
+
+        .day-card.active .day-icon {
+            color: white;
+        }
+
+        .exercise-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .exercise-grid.active {
+            display: grid;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .exercise-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-color: #f5576c;
+        }
+
+        .exercise-gif {
+            width: 100%;
+            height: 270px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exercise-gif::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .exercise-gif i {
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.8);
+            z-index: 1;
+        }
+
+        .exercise-details {
+            text-align: center;
+        }
+
+        .exercise-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .exercise-specs {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+        }
+
+        .spec-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .spec-label {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+            margin-bottom: 0.25rem;
+        }
+
+        .spec-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .slider-nav:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .slider-nav.prev {
+            left: -25px;
+        }
+
+        .slider-nav.next {
+            right: -25px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 2rem 0;
+            }
+
+            .exercise-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .day-card {
+                min-width: 150px;
+                padding: 1.5rem;
+            }
+
+            .slider-nav {
+                display: none;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/css/lightbox.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="hero-section">
+        <div class="container hero-content">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1 class="display-4 fw-bold mb-3">
+                        <i class="fas fa-dumbbell me-3"></i>
+                        Gym Schedule
+                    </h1>
+                    <p class="lead">Transform your fitness journey with our comprehensive workout planner</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="week-selector">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <label for="weekSelect" class="form-label fw-bold">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                Training Week
+                            </label>
+                        </div>
+                        <div class="col-md-8">
+                            <select class="form-select" id="weekSelect">
+                                <option value="week1" selected>Week 1 - Foundation</option>
+                                <option value="week2">Week 2 - Intensity</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title">Training Days</h2>
+                <div class="slider-container">
+                    <div class="slider-nav prev" onclick="slideLeft()">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                    <div class="slider-track" id="sliderTrack">
+                        <div class="day-card active" data-day="day1">
+                            <div class="day-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <h4>Day 1</h4>
+                            <p class="mb-0">Chest</p>
+                        </div>
+                        <div class="day-card" data-day="day2">
+                            <div class="day-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h4>Day 2</h4>
+                            <p class="mb-0">Back</p>
+                        </div>
+                        <div class="day-card" data-day="day3">
+                            <div class="day-icon">
+                                <i class="fas fa-mountain"></i>
+                            </div>
+                            <h4>Day 3</h4>
+                            <p class="mb-0">Biceps & Triceps</p>
+                        </div>
+                        <div class="day-card" data-day="day4">
+                            <div class="day-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <h4>Day 4</h4>
+                            <p class="mb-0">Abs - Cardio</p>
+                        </div>
+                        <div class="day-card" data-day="day5">
+                            <div class="day-icon">
+                                <i class="fas fa-fist-raised"></i>
+                            </div>
+                            <h4>Day 5</h4>
+                            <p class="mb-0">Shoulders</p>
+                        </div>
+                        <div class="day-card" data-day="day6">
+                            <div class="day-icon">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <h4>Day 6</h4>
+                            <p class="mb-0">Legs</p>
+                        </div>
+                    </div>
+                    <div class="slider-nav next" onclick="slideRight()">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="week1">
+            <!-- Exercise Sections -->
+            <div class="exercise-grid active" id="day1">
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day1/INCLINE BARBELL BENCE PRESS (1).gif" data-lightbox="exercise-group"
+                            data-title="INCLINE BARBELL BENCE PRESS">
+                            <img src="images/week1/day1/INCLINE BARBELL BENCE PRESS (1).gif"
+                                alt="INCLINE BARBELL BENCE PRESS">
+                        </a>
+                        <!-- <img src="https://i.pinimg.com/originals/df/fd/85/dffd856bea5056e1adbb683c6ea54613.gif" alt=""> -->
+                        <!-- <i class="fas fa-dumbbell"></i> -->
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">INCLINE BARBELL BENCE PRESS </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day1/DECLINE BARBELL BENCE PRESS (1).gif" data-lightbox="exercise-group"
+                            data-title="DECLINE BARBELL BENCE PRESS">
+                            <img src="images/week1/day1/DECLINE BARBELL BENCE PRESS (1).gif"
+                                alt="DECLINE BARBELL BENCE PRESS">
+                        </a>
+                        <!-- <i class="fas fa-weight-hanging"></i> -->
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DECLINE BARBELL BENCE PRESS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day1/MACHINE CHEST PRESSE (1).gif" data-lightbox="exercise-group"
+                            data-title="MACHINE CHEST PRESS">
+                            <img src="images/week1/day1/MACHINE CHEST PRESSE (1).gif" alt="MACHINE CHEST PRESS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">MACHINE CHEST PRESS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day1/DUMBBELL FLAT BENCH PRESS (1).gif" data-lightbox="exercise-group"
+                            data-title="DUMBBELL FLAT BENCH PRESS">
+                            <img src="images/week1/day1/DUMBBELL FLAT BENCH PRESS (1).gif"
+                                alt="DUMBBELL FLAT BENCH PRESS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DUMBBELL FLAT BENCH PRESS </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day1/CHEST DUMBBELL FLY (1).gif" data-lightbox="exercise-group"
+                            data-title="CHEST DUMBBELL FLY">
+                            <img src="images/week1/day1/CHEST DUMBBELL FLY (1).gif" alt="CHEST DUMBBELL FLY">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">CHEST DUMBBELL FLY </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day1/CABLE LOWER FLY.gif" data-lightbox="exercise-group"
+                            data-title="CABLE LOWER FLY">
+                            <img src="images/week1/day1/CABLE LOWER FLY.gif" alt="CABLE LOWER FLY">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">CABLE LOWER FLY </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day1/DUMBELL PULLOVERS (1).gif" data-lightbox="exercise-group"
+                            data-title="DUMBELL PULLOVERS">
+                            <img src="images/week1/day1/DUMBELL PULLOVERS (1).gif" alt="DUMBELL PULLOVERS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DUMBELL PULLOVERS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exercise-grid" id="day2">
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-grip-horizontal"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">LAT PULL DOWN</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-angle-down"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">MACHINE SEATED ROW</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">BENT OVER ROW</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-fist-raised"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">ONE ARM DUMBELL ROW </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">SINGLE ARM LAT PULLDOWN </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">CABLE PULLOVER - ROPE </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">BACK EXTENSION</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exercise-grid" id="day3">
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/cable-drag-curl (1).gif" data-lightbox="exercise-group"
+                            data-title="CABLE BICEP CURL">
+                            <img src="images/cable-drag-curl (1).gif" alt="CABLE BICEP CURL">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">CABLE BICEP CURL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+
+                        <a href="images/DUMBELL BICEP CURL (1).gif" data-lightbox="exercise-group"
+                            data-title="DUMBELL BICEP CURL">
+                            <img src="images/DUMBELL BICEP CURL (1).gif" alt="DUMBELL BICEP CURL">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DUMBELL BICEP CURL </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/olympic-bar-curl (1).gif" data-lightbox="exercise-group"
+                            data-title="BARBELL HAMMER CURL">
+                            <img src="images/olympic-bar-curl (1).gif" alt="BARBELL HAMMER CURL">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">BARBELL HAMMER CURL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/Concentration-Curl (1).gif" data-lightbox="exercise-group"
+                            data-title="DUMBBELL CONCENTRATION CURL">
+                            <img src="images/Concentration-Curl (1).gif" alt="DUMBBELL CONCENTRATION CURL">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DUMBBELL CONCENTRATION CURL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/CG_BB_BP (1).gif" data-lightbox="exercise-group"
+                            data-title="CLOSE GRIP PRESS TRICEPS">
+                            <img src="images/CG_BB_BP (1).gif" alt="CLOSE GRIP PRESS TRICEPS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">CLOSE GRIP PRESS TRICEPS </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/CABLE SUPINATED TRICEP (1).gif" data-lightbox="exercise-group"
+                            data-title="CABLE SUPINATED TRICEP">
+                            <img src="images/CABLE SUPINATED TRICEP (1).gif" alt="CABLE SUPINATED TRICEP">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">CABLE SUPINATED TRICEP </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/Seated-One-Arm-Dumbbell-Triceps-.gif" data-lightbox="exercise-group"
+                            data-title="SINGLE-ARM OVERHEAD">
+                            <img src="images/Seated-One-Arm-Dumbbell-Triceps-.gif" alt="SINGLE-ARM OVERHEAD">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">SINGLE-ARM OVERHEAD </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/Dumbbell-Kickback (1).gif" data-lightbox="exercise-group"
+                            data-title="DUMBBELL KICK BACK">
+                            <img src="images/Dumbbell-Kickback (1).gif" alt="DUMBBELL KICK BACK">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DUMBBELL KICK BACK </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/BAR REVERSE CURL (1).gif" data-lightbox="exercise-group"
+                            data-title="BAR REVERSE CURL">
+                            <img src="images/BAR REVERSE CURL (1).gif" alt="BAR REVERSE CURL">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">BAR REVERSE CURL </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/Seated-Cable-Wrist-Curl (1).webp" data-lightbox="exercise-group"
+                            data-title="WRIST CABLE CURL">
+                            <img src="images/Seated-Cable-Wrist-Curl (1).webp" alt="WRIST CABLE CURL">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">WRIST CABLE CURL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exercise-grid" id="day4">
+                
+            </div>
+
+            <div class="exercise-grid" id="day5">
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+
+                        <a href="images/machine shoulder press (1).gif" data-lightbox="exercise-group"
+                            data-title="MACHINE SHOULDER PRESS">
+                            <img src="images/machine shoulder press (1).gif" alt="MACHINE SHOULDER PRESS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">MACHINE SHOULDER PRESS </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/DUMBBELL ARNOLD PRESS (1).gif" data-lightbox="exercise-group"
+                            data-title="DUMBBELL ARNOLD PRESS">
+                            <img src="images/DUMBBELL ARNOLD PRESS (1).gif" alt="DUMBBELL ARNOLD PRESS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DUMBBELL ARNOLD PRESS </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/SHOULDER PLATE FRONT RISE (1).gif" data-lightbox="exercise-group"
+                            data-title="SHOULDER PLATE FRONT RISE">
+                            <img src="images/SHOULDER PLATE FRONT RISE (1).gif" alt="SHOULDER PLATE FRONT RISE">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">SHOULDER PLATE FRONT RISE</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/DUMBBELL SIDE RAISE (1).gif" data-lightbox="exercise-group"
+                            data-title="DUMBBELL SIDE RAISE">
+                            <img src="images/DUMBBELL SIDE RAISE (1).gif" alt="DUMBBELL SIDE RAISE">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DUMBBELL SIDE RAISE </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/SHOULDER UPRIGHT ROWS (1).gif" data-lightbox="exercise-group"
+                            data-title="SHOULDER UPRIGHT ROWS">
+                            <img src="images/SHOULDER UPRIGHT ROWS (1).gif" alt="SHOULDER UPRIGHT ROWS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">SHOULDER UPRIGHT ROWS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/CABLE FACE PULLS (1).gif" data-lightbox="exercise-group"
+                            data-title="CABLE FACE PULLS">
+                            <img src="images/CABLE FACE PULLS (1).gif" alt="CABLE FACE PULLS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">CABLE FACE PULLS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/SHORUGS (1).gif" data-lightbox="exercise-group" data-title="SHORUGS">
+                            <img src="images/SHORUGS (1).gif" alt="SHORUGS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">SHORUGS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exercise-grid" id="day6">
+                <div class="exercise-card">
+                    <div class="exercise-gif"> 
+                        <a href="images/week1/day6/BARBELL SQUAT (1).gif"
+                            data-lightbox="exercise-group" data-title="BARBELL SQUAT">
+                            <img src="images/week1/day6/BARBELL SQUAT (1).gif" alt="BARBELL SQUAT">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">BARBELL SQUAT</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day6/REVERSE HACK SQUAT (1).jpg"
+                            data-lightbox="exercise-group" data-title="REVERSE HACK SQUAT">
+                            <img src="images/week1/day6/REVERSE HACK SQUAT (1).jpg" alt="REVERSE HACK SQUAT">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">REVERSE HACK SQUAT </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day6/LEG PRESS (1).gif"
+                            data-lightbox="exercise-group" data-title="LEG PRESS">
+                            <img src="images/week1/day6/LEG PRESS (1).gif" alt="LEG PRESS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">LEG PRESS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day6/LEG EXTENSION (1).gif"
+                            data-lightbox="exercise-group" data-title="LEG EXTENSION">
+                            <img src="images/week1/day6/LEG EXTENSION (1).gif" alt="LEG EXTENSION">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">LEG EXTENSION </h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day6/LUNGS DUMBBELL.webp"
+                            data-lightbox="exercise-group" data-title="LUNGS DUMBBELL">
+                            <img src="images/week1/day6/LUNGS DUMBBELL.webp" alt="LUNGS DUMBBELL">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">LUNGS DUMBBELL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day6/LEG CURL (1).gif"
+                            data-lightbox="exercise-group" data-title="LEG CURL">
+                            <img src="images/week1/day6/LEG CURL (1).gif" alt="LEG CURL">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">LEG CURL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week1/day6/SEATED CALF RAISE (1).gif"
+                            data-lightbox="exercise-group" data-title="SEATED CALF RAISE">
+                            <img src="images/week1/day6/SEATED CALF RAISE (1).gif" alt="SEATED CALF RAISE">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">SEATED CALF RAISE</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="week2 hidden">
+            <!-- Exercise Sections -->
+            <div class="exercise-grid active" id="day1">
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="https://i.pinimg.com/originals/ac/6a/be/ac6abe8d1eea6c6906c5277793626e54.gif"
+                            data-lightbox="exercise-group" data-title="Hammer Incline Chest Press">
+                            <img src="https://i.pinimg.com/originals/ac/6a/be/ac6abe8d1eea6c6906c5277793626e54.gif"
+                                alt="Hammer Incline Chest Press">
+                        </a>
+                        <!-- <img src="https://i.pinimg.com/originals/df/fd/85/dffd856bea5056e1adbb683c6ea54613.gif" alt=""> -->
+                        <!-- <i class="fas fa-dumbbell"></i> -->
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Hammer Incline Chest Press</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="https://i.pinimg.com/originals/be/94/3f/be943f55c4a35f5599824db11168d686.gif"
+                            data-lightbox="exercise-group" data-title="Dumbell Incline Chest Press">
+                            <img src="https://i.pinimg.com/originals/be/94/3f/be943f55c4a35f5599824db11168d686.gif"
+                                alt="Dumbell Incline Chest Press">
+                        </a>
+                        <!-- <i class="fas fa-weight-hanging"></i> -->
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Dumbell Incline Chest Press</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="https://www.inspireusafoundation.org/wp-content/uploads/2023/03/barbell-bench-press-side-view.gif"
+                            data-lightbox="exercise-group" data-title="Flat Bench Press - Bar">
+                            <img src="https://www.inspireusafoundation.org/wp-content/uploads/2023/03/barbell-bench-press-side-view.gif"
+                                alt="Flat Bench Press - Bar">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Flat Bench Press - Bar</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif"><a
+                            href="https://fitnessprogramer.com/wp-content/uploads/2021/02/Pec-Deck-Fly.gif"
+                            data-lightbox="exercise-group" data-title="Pec Reck Fly">
+                            <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Pec-Deck-Fly.gif"
+                                alt="Pec Reck Fly">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Pec Reck Fly</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="https://i.pinimg.com/originals/06/bc/08/06bc08f20343ec7179604d52c4e0e054.gif"
+                            data-lightbox="exercise-group" data-title="Cable Upper Fly">
+                            <img src="https://i.pinimg.com/originals/06/bc/08/06bc08f20343ec7179604d52c4e0e054.gif"
+                                alt="Cable Upper Fly">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Cable Upper Fly</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="https://i.pinimg.com/originals/ac/6a/be/ac6abe8d1eea6c6906c5277793626e54.gif"
+                            data-lightbox="exercise-group" data-title="Incline Dumbell Fly">
+                            <img src="https://i.pinimg.com/originals/ac/6a/be/ac6abe8d1eea6c6906c5277793626e54.gif"
+                                alt="Incline Dumbell Fly">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Incline Dumbell Fly</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="https://i.pinimg.com/originals/cf/69/f3/cf69f3aba568dd6b577e87b86dfe2fbc.gif"
+                            data-lightbox="exercise-group" data-title="Ez Bar Pullovers">
+                            <img src="https://i.pinimg.com/originals/cf/69/f3/cf69f3aba568dd6b577e87b86dfe2fbc.gif"
+                                alt="Ez Bar Pullovers">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Ez Bar Pullovers</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exercise-grid" id="day2">
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week2/day2/Deadlift (1).gif" data-lightbox="exercise-group"
+                            data-title="Deadlift">
+                            <img src="images/week2/day2/Deadlift (1).gif"
+                                alt="Deadlift">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Deadlift</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week2/day2/T-Bar (1).gif" data-lightbox="exercise-group"
+                            data-title="T-Bar">
+                            <img src="images/week2/day2/T-Bar (1).gif"
+                                alt="T-Bar">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">T-Bar</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week2/day2/Iso Lateral High Row (1).gif" data-lightbox="exercise-group"
+                            data-title="Iso Lateral High Row">
+                            <img src="images/week2/day2/Iso Lateral High Row (1).gif"
+                                alt="Iso Lateral High Row">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Iso Lateral High Row</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week2/day2/Cable Seated Row (1).gif" data-lightbox="exercise-group"
+                            data-title="Cable Seated Row">
+                            <img src="images/week2/day2/Cable Seated Row (1).gif"
+                                alt="Cable Seated Row">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Cable Seated Row</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week2/day2/Close Grip Lat Pull Down (1).gif" data-lightbox="exercise-group"
+                            data-title="Close Grip Lat Pull Down">
+                            <img src="images/week2/day2/Close Grip Lat Pull Down (1).gif"
+                                alt="Close Grip Lat Pull Down">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Close Grip Lat Pull Down</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week2/day2/Cable One Arm Row (1).gif" data-lightbox="exercise-group"
+                            data-title="Cable One Arm Row">
+                            <img src="images/week2/day2/Cable One Arm Row (1).gif"
+                                alt="Cable One Arm Row">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Cable One Arm Row</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exercise-grid" id="day3">
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-arrows-alt-v"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">WIDE GRIP BARBELL CURLS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+
+                        <a href="images/cable-drag-curl (1).gif" data-lightbox="exercise-group"
+                            data-title="CABLE BICEP CURL">
+                            <img src="images/cable-drag-curl (1).gif" alt="CABLE BICEP CURL">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">ROPE HAMMER CURL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">PREACHER CURL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-arrows-alt-h"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">CLOSE GRIP EZ BAR CURL EZ-BAR-SKULL CRUSHER</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DUMBBELL OVERHEAD EXTENSION</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">CABLE PULL DOWN</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">BENCH DIP</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">CABLE REVERSE CURL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">WRIST CABLE CURL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exercise-grid" id="day4">
+                
+            </div>
+
+            <div class="exercise-grid" id="day5">
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+
+                        <a href="https://media.tenor.com/CV1FfGVNpdcAAAAM/desenvolvimento-militar.gif"
+                            data-lightbox="exercise-group" data-title="BARBELL SHOULDER PRESS">
+                            <img src="https://media.tenor.com/CV1FfGVNpdcAAAAM/desenvolvimento-militar.gif"
+                                alt="BARBELL SHOULDER PRESS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">BARBELL SHOULDER PRESS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shoulder-Press.gif"
+                            data-lightbox="exercise-group" data-title="DUMBBELL SHOULDER PRESS">
+                            <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shoulder-Press.gif"
+                                alt="DUMBBELL SHOULDER PRESS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DUMBBELL SHOULDER PRESS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="https://fitnessprogramer.com/wp-content/uploads/2021/06/Alternating-Dumbbell-Front-Raise.gif"
+                            data-lightbox="exercise-group" data-title="DUMBBELL FRONT RISE">
+                            <img src="https://fitnessprogramer.com/wp-content/uploads/2021/06/Alternating-Dumbbell-Front-Raise.gif"
+                                alt="DUMBBELL FRONT RISE">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DUMBBELL FRONT RISE</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="https://burnfit.io/wp-content/uploads/2023/11/REV_PEC_DECK_MC.gif"
+                            data-lightbox="exercise-group" data-title="REVERSE PEC DECK">
+                            <img src="https://burnfit.io/wp-content/uploads/2023/11/REV_PEC_DECK_MC.gif"
+                                alt="REVERSE PEC DECK">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">REVERSE PEC DECK</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/barbell-upright-row-standing.gif" data-lightbox="exercise-group"
+                            data-title="STRAIGHT BAR UPRIGHT ROWS">
+                            <img src="images/barbell-upright-row-standing.gif" alt="STRAIGHT BAR UPRIGHT ROWS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">STRAIGHT BAR UPRIGHT ROWS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="https://i.pinimg.com/originals/f1/61/4d/f1614d1e8e4bc45b75e682533dd7c940.gif"
+                            data-lightbox="exercise-group" data-title="DUMBBELL SIDE RAISE SEATED">
+                            <img src="https://i.pinimg.com/originals/f1/61/4d/f1614d1e8e4bc45b75e682533dd7c940.gif"
+                                alt="DUMBBELL SIDE RAISE SEATED">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">DUMBBELL SIDE RAISE SEATED</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="https://i.pinimg.com/originals/fe/a5/af/fea5af88cca2ae9f4b1a940b106cbdcf.gif"
+                            data-lightbox="exercise-group" data-title="BARBELL SHORUGS">
+                            <img src="https://i.pinimg.com/originals/fe/a5/af/fea5af88cca2ae9f4b1a940b106cbdcf.gif"
+                                alt="BARBELL SHORUGS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">BARBELL SHORUGS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="exercise-grid" id="day6">
+                <div class="exercise-card">
+                    <div class="exercise-gif"> <a href="images/week2/day6/HACK SQUAT.gif"
+                            data-lightbox="exercise-group" data-title="HACK SQUAT">
+                            <img src="images/week2/day6/HACK SQUAT.gif" alt="HACK SQUAT">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">HACK SQUAT</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/LEG_PRESS (1).gif" data-lightbox="exercise-group" data-title="LEG PRESS">
+                            <img src="images/LEG_PRESS (1).gif" alt="LEG PRESS">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">LEG PRESS</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/LGE_EXT (1).gif" data-lightbox="exercise-group" data-title="LEG EXTENSION">
+                            <img src="images/LGE_EXT (1).gif" alt="LEG EXTENSION">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">LEG EXTENSION</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/dumbbell-walking-lunges (1).webp" data-lightbox="exercise-group"
+                            data-title="BOX LUNGES DUMBBELL">
+                            <img src="images/dumbbell-walking-lunges (1).webp" alt="BOX LUNGES DUMBBELL">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">BOX LUNGES DUMBBELL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/barbell-deadlift_600x600 (1).webp" data-lightbox="exercise-group"
+                            data-title="RDL">
+                            <img src="images/barbell-deadlift_600x600 (1).webp" alt="RDL">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">RDL</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/231878145ea0c357065f5e6573634446 (1).jpg" data-lightbox="exercise-group"
+                            data-title="ABDUCTOR+ADDACTOR">
+                            <img src="images/231878145ea0c357065f5e6573634446 (1).jpg" alt="ABDUCTOR+ADDACTOR">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">ABDUCTOR+ADDACTOR</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/Standing-Barbell-Calf-Raise (1).gif" data-lightbox="exercise-group"
+                            data-title="BARBELL CALF">
+                            <img src="images/Standing-Barbell-Calf-Raise (1).gif" alt="BARBELL CALF">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">BARBELL CALF</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lightbox2@2.11.3/dist/js/lightbox.min.js"></script>
+    <script>
+        // Slider functionality
+        let currentSlide = 0;
+        const sliderTrack = document.getElementById('sliderTrack');
+        const dayCards = document.querySelectorAll('.day-card');
+        const exerciseGrids = document.querySelectorAll('.exercise-grid');
+        var selectedWeek = 'week1';
+
+        // Function to slide left
+        function slideLeft() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlider();
+            }
+        }
+
+        // Function to slide right
+        function slideRight() {
+            if (currentSlide < dayCards.length - 1) {
+                currentSlide++;
+                updateSlider();
+            }
+        }
+
+        // Function to update slider position
+        function updateSlider() {
+            const cardWidth = dayCards[0].offsetWidth + 16; // card width + gap
+            sliderTrack.scrollLeft = currentSlide * cardWidth;
+        }
+
+        // Handle day card clicks
+        dayCards.forEach((card, index) => {
+            card.addEventListener('click', () => {
+                // Remove active class from all cards
+                dayCards.forEach(c => c.classList.remove('active'));
+
+                // Add active class to clicked card
+                card.classList.add('active');
+
+                // Hide all exercise grids
+                exerciseGrids.forEach(grid => grid.classList.remove('active'));
+
+                // Show corresponding exercise grid
+                const dayId = card.getAttribute('data-day');
+                const targetWeek = document.querySelector(`.${selectedWeek}`);
+                const targetGrid = targetWeek.querySelector(`#${dayId}`);
+                // const targetGrid = document.getElementById(dayId);
+                if (targetGrid) {
+                    targetGrid.classList.add('active');
+                }
+
+                // Update current slide
+                currentSlide = index;
+            });
+        });
+
+        // Week selector functionality
+        const weekSelect = document.getElementById('weekSelect');
+        weekSelect.addEventListener('change', function () {
+            // Here you can add logic to change exercise content based on selected week
+            console.log('Selected week:', this.value);
+            selectedWeek = this.value;
+            if (selectedWeek == 'week1') {
+                $('.week1').removeClass('hidden');
+                $('.week2').addClass('hidden');
+            }
+            if (selectedWeek == 'week2') {
+                $('.week2').removeClass('hidden');
+                $('.week1').addClass('hidden');
+
+            }
+            // Show corresponding exercise grid
+            const dayId = $('.day-card.active').data('day');
+            const targetWeek = document.querySelector(`.${selectedWeek}`);
+            const targetGrid = targetWeek.querySelector(`#${dayId}`);
+            // const targetGrid = document.getElementById(dayId);
+            if (targetGrid) {
+                targetGrid.classList.add('active');
+            }
+
+            // Example: You could modify exercise content based on week selection
+            // For now, it just logs the selection
+        });
+
+        // Touch/swipe support for mobile
+        let startX = 0;
+        let endX = 0;
+
+        sliderTrack.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        });
+
+        sliderTrack.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        });
+
+        sliderTrack.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const threshold = 50;
+            const diffX = startX - endX;
+
+            if (Math.abs(diffX) > threshold) {
+                if (diffX > 0) {
+                    // Swipe left - go to next slide
+                    slideRight();
+                } else {
+                    // Swipe right - go to previous slide
+                    slideLeft();
+                }
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                slideLeft();
+            } else if (e.key === 'ArrowRight') {
+                slideRight();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial state
+            dayCards[0].classList.add('active');
+            exerciseGrids[0].classList.add('active');
+        });
+    </script>
+</body>
+
+</html>
