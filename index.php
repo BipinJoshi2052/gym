@@ -936,7 +936,54 @@
             </div>
 
             <div class="exercise-grid" id="day4">
-                
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Squats</h3>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-weight-hanging"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Treadmill</h3>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-angle-right"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Cycling</h3>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-angle-up"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Push Ups</h3>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Sit Ups</h3>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Skipping</h3>
+                    </div>
+                </div>
             </div>
 
             <div class="exercise-grid" id="day5">
@@ -1707,7 +1754,54 @@
             </div>
 
             <div class="exercise-grid" id="day4">
-                
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Squats</h3>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-weight-hanging"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Treadmill</h3>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-angle-right"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Cycling</h3>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-angle-up"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Push Ups</h3>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Sit Ups</h3>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">Skipping</h3>
+                    </div>
+                </div>
             </div>
 
             <div class="exercise-grid" id="day5">
