@@ -1587,7 +1587,11 @@
             <div class="exercise-grid" id="day3">
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <i class="fas fa-arrows-alt-v"></i>
+                        <a href="images/week2/day3/wide-grip-barbell-curls (1).gif" data-lightbox="exercise-group"
+                            data-title="WIDE GRIP BARBELL CURLS">
+                            <img src="images/week2/day3/wide-grip-barbell-curls (1).gif"
+                                alt="WIDE GRIP BARBELL CURLS">
+                        </a>
                     </div>
                     <div class="exercise-details">
                         <h3 class="exercise-name">WIDE GRIP BARBELL CURLS</h3>
@@ -1605,10 +1609,9 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-
-                        <a href="images/cable-drag-curl (1).gif" data-lightbox="exercise-group"
-                            data-title="CABLE BICEP CURL">
-                            <img src="images/cable-drag-curl (1).gif" alt="CABLE BICEP CURL">
+                        <a href="images/week2/day3/rope hammer curl (1).gif" data-lightbox="exercise-group"
+                            data-title="ROPE HAMMER CURL">
+                            <img src="images/week2/day3/rope hammer curl (1).gif" alt="ROPE HAMMER CURL">
                         </a>
                     </div>
                     <div class="exercise-details">
@@ -1627,7 +1630,11 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <i class="fas fa-arrow-up"></i>
+                        <a href="images/week2/day3/preacher-curl (1).gif" data-lightbox="exercise-group"
+                            data-title="PREACHER CURL">
+                            <img src="images/week2/day3/preacher-curl (1).gif"
+                                alt="PREACHER CURL">
+                        </a>
                     </div>
                     <div class="exercise-details">
                         <h3 class="exercise-name">PREACHER CURL</h3>
@@ -1645,10 +1652,14 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <i class="fas fa-arrows-alt-h"></i>
+                        <a href="images/week2/day3/CLOSE GRIP EZ BAR CURL (1).gif" data-lightbox="exercise-group"
+                            data-title="CLOSE GRIP EZ BAR CURL">
+                            <img src="images/week2/day3/CLOSE GRIP EZ BAR CURL (1).gif"
+                                alt="CLOSE GRIP EZ BAR CURL">
+                        </a>
                     </div>
                     <div class="exercise-details">
-                        <h3 class="exercise-name">CLOSE GRIP EZ BAR CURL EZ-BAR-SKULL CRUSHER</h3>
+                        <h3 class="exercise-name">CLOSE GRIP EZ BAR CURL</h3>
                         <div class="exercise-specs">
                             <div class="spec-item">
                                 <div class="spec-label">Sets</div>
@@ -1663,7 +1674,33 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <i class="fas fa-fire"></i>
+                        <a href="images/week2/day3/EZ-BAR-SKULL CRUSHER (1).gif" data-lightbox="exercise-group"
+                            data-title="EZ-BAR-SKULL CRUSHER">
+                            <img src="images/week2/day3/EZ-BAR-SKULL CRUSHER (1).gif"
+                                alt="EZ-BAR-SKULL CRUSHER">
+                        </a>
+                    </div>
+                    <div class="exercise-details">
+                        <h3 class="exercise-name">EZ-BAR-SKULL CRUSHER</h3>
+                        <div class="exercise-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">Sets</div>
+                                <div class="spec-value">3</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Reps</div>
+                                <div class="spec-value">15-12-10</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exercise-card">
+                    <div class="exercise-gif">
+                        <a href="images/week2/day3/DUMBBELL OVERHEAD EXTENSION (1).gif" data-lightbox="exercise-group"
+                            data-title="DUMBBELL OVERHEAD EXTENSION">
+                            <img src="images/week2/day3/DUMBBELL OVERHEAD EXTENSION (1).gif"
+                                alt="DUMBBELL OVERHEAD EXTENSION">
+                        </a>
                     </div>
                     <div class="exercise-details">
                         <h3 class="exercise-name">DUMBBELL OVERHEAD EXTENSION</h3>
@@ -1681,7 +1718,11 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <i class="fas fa-circle"></i>
+                        <a href="images/week2/day3/02001301-Cable-CABLE PULL DOWN (1).gif" data-lightbox="exercise-group"
+                            data-title="CABLE PULL DOWN">
+                            <img src="images/week2/day3/02001301-Cable-CABLE PULL DOWN (1).gif"
+                                alt="CABLE PULL DOWN">
+                        </a>
                     </div>
                     <div class="exercise-details">
                         <h3 class="exercise-name">CABLE PULL DOWN</h3>
@@ -1699,7 +1740,11 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <i class="fas fa-circle"></i>
+                        <a href="images/week2/day3/BENCH_DIPS (1).gif" data-lightbox="exercise-group"
+                            data-title="BENCH DIP">
+                            <img src="images/week2/day3/BENCH_DIPS (1).gif"
+                                alt="BENCH DIP">
+                        </a>
                     </div>
                     <div class="exercise-details">
                         <h3 class="exercise-name">BENCH DIP</h3>
@@ -1717,7 +1762,11 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <i class="fas fa-circle"></i>
+                        <a href="images/week2/day3/CABLE REVERSE CURL (1).gif" data-lightbox="exercise-group"
+                            data-title="CABLE REVERSE CURL">
+                            <img src="images/week2/day3/CABLE REVERSE CURL (1).gif"
+                                alt="CABLE REVERSE CURL">
+                        </a>
                     </div>
                     <div class="exercise-details">
                         <h3 class="exercise-name">CABLE REVERSE CURL</h3>
@@ -1735,7 +1784,11 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <i class="fas fa-circle"></i>
+                        <a href="images/week2/day3/WRIST CABLE CURL (1).webp" data-lightbox="exercise-group"
+                            data-title="WRIST CABLE CURL">
+                            <img src="images/week2/day3/WRIST CABLE CURL (1).webp"
+                                alt="WRIST CABLE CURL">
+                        </a>
                     </div>
                     <div class="exercise-details">
                         <h3 class="exercise-name">WRIST CABLE CURL</h3>
