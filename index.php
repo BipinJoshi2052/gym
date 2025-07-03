@@ -1861,9 +1861,9 @@
                 <div class="exercise-card">
                     <div class="exercise-gif">
 
-                        <a href="https://media.tenor.com/CV1FfGVNpdcAAAAM/desenvolvimento-militar.gif"
+                        <a href="images/week2/day5/BARBELL SHOULDER PRESS (1).gif"
                             data-lightbox="exercise-group" data-title="BARBELL SHOULDER PRESS">
-                            <img src="https://media.tenor.com/CV1FfGVNpdcAAAAM/desenvolvimento-militar.gif"
+                            <img src="images/week2/day5/BARBELL SHOULDER PRESS (1).gif"
                                 alt="BARBELL SHOULDER PRESS">
                         </a>
                     </div>
@@ -1883,9 +1883,9 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <a href="https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shoulder-Press.gif"
+                        <a href="images/week2/day5/Dumbbell-Shoulder-Press (1).gif"
                             data-lightbox="exercise-group" data-title="DUMBBELL SHOULDER PRESS">
-                            <img src="https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shoulder-Press.gif"
+                            <img src="images/week2/day5/Dumbbell-Shoulder-Press (1).gif"
                                 alt="DUMBBELL SHOULDER PRESS">
                         </a>
                     </div>
@@ -1905,9 +1905,9 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <a href="https://fitnessprogramer.com/wp-content/uploads/2021/06/Alternating-Dumbbell-Front-Raise.gif"
+                        <a href="images/week2/day5/DUMBBELL FRONT RISE (1).gif"
                             data-lightbox="exercise-group" data-title="DUMBBELL FRONT RISE">
-                            <img src="https://fitnessprogramer.com/wp-content/uploads/2021/06/Alternating-Dumbbell-Front-Raise.gif"
+                            <img src="images/week2/day5/DUMBBELL FRONT RISE (1).gif"
                                 alt="DUMBBELL FRONT RISE">
                         </a>
                     </div>
@@ -1927,9 +1927,9 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <a href="https://burnfit.io/wp-content/uploads/2023/11/REV_PEC_DECK_MC.gif"
+                        <a href="images/week2/day5/REVERSE PEC DECK (1).gif"
                             data-lightbox="exercise-group" data-title="REVERSE PEC DECK">
-                            <img src="https://burnfit.io/wp-content/uploads/2023/11/REV_PEC_DECK_MC.gif"
+                            <img src="images/week2/day5/REVERSE PEC DECK (1).gif"
                                 alt="REVERSE PEC DECK">
                         </a>
                     </div>
@@ -1949,9 +1949,9 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <a href="images/barbell-upright-row-standing.gif" data-lightbox="exercise-group"
+                        <a href="images/week2/day5/STRAIGHT BAR UPRIGHT ROWS (1).gif" data-lightbox="exercise-group"
                             data-title="STRAIGHT BAR UPRIGHT ROWS">
-                            <img src="images/barbell-upright-row-standing.gif" alt="STRAIGHT BAR UPRIGHT ROWS">
+                            <img src="images/week2/day5/STRAIGHT BAR UPRIGHT ROWS (1).gif" alt="STRAIGHT BAR UPRIGHT ROWS">
                         </a>
                     </div>
                     <div class="exercise-details">
@@ -1970,9 +1970,9 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <a href="https://i.pinimg.com/originals/f1/61/4d/f1614d1e8e4bc45b75e682533dd7c940.gif"
+                        <a href="images/week2/day5/DUMBBELL SIDE RAISE SEATED (1).gif"
                             data-lightbox="exercise-group" data-title="DUMBBELL SIDE RAISE SEATED">
-                            <img src="https://i.pinimg.com/originals/f1/61/4d/f1614d1e8e4bc45b75e682533dd7c940.gif"
+                            <img src="images/week2/day5/DUMBBELL SIDE RAISE SEATED (1).gif"
                                 alt="DUMBBELL SIDE RAISE SEATED">
                         </a>
                     </div>
@@ -1992,9 +1992,9 @@
                 </div>
                 <div class="exercise-card">
                     <div class="exercise-gif">
-                        <a href="https://i.pinimg.com/originals/fe/a5/af/fea5af88cca2ae9f4b1a940b106cbdcf.gif"
+                        <a href="images/week2/day5/BARBELL SHORUGS (1).gif"
                             data-lightbox="exercise-group" data-title="BARBELL SHORUGS">
-                            <img src="https://i.pinimg.com/originals/fe/a5/af/fea5af88cca2ae9f4b1a940b106cbdcf.gif"
+                            <img src="images/week2/day5/BARBELL SHORUGS (1).gif"
                                 alt="BARBELL SHORUGS">
                         </a>
                     </div>
